@@ -19,7 +19,7 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "Signaling MNA Capabilities Using IS-IS / OSPF"
+title: "Signaling MNA Capabilities Using IGP"
 abbrev: ""
 category: info
 
