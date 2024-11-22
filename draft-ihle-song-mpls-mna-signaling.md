@@ -48,19 +48,19 @@ author:
     fullname: Fabian Ihle
     organization: University of Tuebingen
     city: Tuebingen
-    country: Germany    
+    country: Germany
     email: fabian.ihle@uni-tuebingen.de
  -
     fullname: Xueyan Song
     organization: ZTE Corporation
-    country: China    
-    email: song.xueyan2@zte.com.cn  
+    country: China
+    email: song.xueyan2@zte.com.cn
  -
     fullname: Michael Menth
     organization: University of Tuebingen
     city: Tuebingen
     country: Germany
-    email: michael.menth@uni-tuebingen.de    
+    email: michael.menth@uni-tuebingen.de
 
 normative:
 
