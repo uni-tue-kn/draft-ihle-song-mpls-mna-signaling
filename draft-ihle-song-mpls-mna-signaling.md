@@ -19,11 +19,11 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
+title: "Signaling MNA Capabilities Using IS-IS / OSPF"
+abbrev: ""
 category: info
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-ihle-song-mpls-mna-signaling-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
@@ -32,9 +32,9 @@ v: 3
 area: AREA
 workgroup: WG Working Group
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - signaling
+ - mpls
+ - mna
 venue:
   group: WG
   type: Working Group
@@ -45,9 +45,22 @@ venue:
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+    fullname: Fabian Ihle
+    organization: University of Tuebingen
+    city: Tuebingen
+    country: Germany    
+    email: fabian.ihle@uni-tuebingen.de
+ -
+    fullname: Xueyan Song
+    organization: ZTE Corporation
+    country: China    
+    email: song.xueyan2@zte.com.cn  
+ -
+    fullname: Michael Menth
+    organization: University of Tuebingen
+    city: Tuebingen
+    country: Germany
+    email: michael.menth@uni-tuebingen.de    
 
 normative:
 
