@@ -178,7 +178,7 @@ Table of Contents
    to be able to process network actions.  This consumes hardware
    resources that may be needed to encode other LSEs, e.g., forwarding
    labels for SR-MPLS paths.  Many use cases in the MNA
-   framework[I-D.ietf-mpls-mna-use-cases] do not require a maximum-sized
+   framework[I-D.ietf-mpls-mna-usecases] do not require a maximum-sized
    NAS of 17 LSEs to encode the network action and their ancillary data.
    Therefore, by signaling the maximum-supported NAS size of an MNA
    implementation from an LSR to an ingress LER, the allocated resources
@@ -402,8 +402,13 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-ietf-mpls-
               mna-hdr-11>.
 
-   [I-D.ietf-mpls-mna-use-cases]
-              "*** BROKEN REFERENCE ***".
+   [I-D.ietf-mpls-mna-usecases]
+              Saad, T., Makhijani, K., Song, H., and G. Mirsky, "Use
+              Cases for MPLS Network Action Indicators and MPLS
+              Ancillary Data", Work in Progress, Internet-Draft, draft-
+              ietf-mpls-mna-usecases-15, 23 September 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mpls-
+              mna-usecases-15>.
 
    [rfc7981]  Ginsberg, L., Previdi, S., and M. Chen, "IS-IS Extensions
               for Advertising Router Information", RFC 7981,

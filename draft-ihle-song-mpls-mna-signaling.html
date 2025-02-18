@@ -1347,7 +1347,7 @@ An RLD of 8 is required in this example to read the full MPLS stack.<a href="#se
 At an LSR, at least two NAS, a select-scoped and a hop-by-hop-scoped NAS, are possible.
 With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to be able to process network actions.
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.
-Many use cases in the MNA framework<span>[<a href="#I-D.ietf-mpls-mna-use-cases" class="cite xref">I-D.ietf-mpls-mna-use-cases</a>]</span> do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
+Many use cases in the MNA framework<span>[<a href="#I-D.ietf-mpls-mna-usecases" class="cite xref">I-D.ietf-mpls-mna-usecases</a>]</span> do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
 Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.2-2">An LSR <span class="bcp14">SHOULD</span> signal the maximum-supported size of a NAS for each scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.
 Those parameters include the Format A, B, C, and D LSEs from <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> in a NAS.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
@@ -1649,9 +1649,9 @@ The scope of the advertisement is specific to the deployment.<a href="#section-3
         <dd>
 <span class="refAuthor">Rajamanickam, J.</span>, <span class="refAuthor">Gandhi, R.</span>, <span class="refAuthor">Zigler, R.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">K. Kompella</span>, <span class="refTitle">"MPLS Network Action (MNA) Sub-Stack Solution"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-hdr-11</span>, <time datetime="2025-02-17" class="refDate">17 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.ietf-mpls-mna-use-cases">[I-D.ietf-mpls-mna-use-cases]</dt>
+<dt id="I-D.ietf-mpls-mna-usecases">[I-D.ietf-mpls-mna-usecases]</dt>
         <dd>
-<span class="refTitle">"*** BROKEN REFERENCE ***"</span>. </dd>
+<span class="refAuthor">Saad, T.</span>, <span class="refAuthor">Makhijani, K.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">G. Mirsky</span>, <span class="refTitle">"Use Cases for MPLS Network Action Indicators and MPLS Ancillary Data"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-usecases-15</span>, <time datetime="2024-09-23" class="refDate">23 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-usecases-15">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-usecases-15</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="rfc7981">[rfc7981]</dt>
         <dd>
