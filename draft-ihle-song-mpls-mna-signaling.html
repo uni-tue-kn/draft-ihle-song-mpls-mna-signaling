@@ -9,24 +9,26 @@
 <meta content="Xueyan Song" name="author">
 <meta content="Michael Menth" name="author">
 <meta content="
-       TODO Abstract 
+       This document defines capabilities of nodes supporting MPLS Network Actions (MNA) and how to signal them using IS-IS and OSPF.
+The capabilities include the Readable Label Depth (RLD), supported network action opcodes, and the maximum sizes of differently scoped NAS.
+For IS-IS routers, a sub-TLVs encoding is leveraged. 
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.27.0" name="generator">
 <meta content="signaling" name="keyword">
 <meta content="mpls" name="keyword">
 <meta content="mna" name="keyword">
 <meta content="draft-ihle-song-mpls-mna-signaling-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
-    Python 3.12.7
+  xml2rfc 3.27.0
+    Python 3.12.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.4
+    Jinja2 3.1.5
     lxml 5.3.0
     platformdirs 4.3.6
-    pycountry 22.3.5
-    PyYAML 6.0.1
+    pycountry 24.6.1
+    PyYAML 6.0.2
     requests 2.32.3
     setuptools 70.3.0
     wcwidth 0.2.13
@@ -439,7 +441,7 @@ dl {
     margin-bottom: 0;
   }
 }
-dl > dt {
+dl:not(.dlNewline) > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
@@ -538,7 +540,11 @@ figcaption, caption {
   }
   pre, svg {
     display: inline-block;
-    overflow-x: auto;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
   }
   pre {
     max-width: 100%;
@@ -1044,11 +1050,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">SIG</td>
-<td class="right">November 2024</td>
+<td class="right">February 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ihle, et al.</td>
-<td class="center">Expires 26 May 2025</td>
+<td class="center">Expires 22 August 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1061,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ihle-song-mpls-mna-signaling-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-22" class="published">22 November 2024</time>
+<time datetime="2025-02-18" class="published">18 February 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-05-26">26 May 2025</time></dd>
+<dd class="expires"><time datetime="2025-08-22">22 August 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1087,7 +1093,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Signaling MNA Capabilities Using IGP</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">TODO Abstract<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines capabilities of nodes supporting MPLS Network Actions (MNA) and how to signal them using IS-IS and OSPF.
+The capabilities include the Readable Label Depth (RLD), supported network action opcodes, and the maximum sizes of differently scoped NAS.
+For IS-IS routers, a sub-TLVs encoding is leveraged.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1119,7 +1127,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1128,7 +1136,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2024 IETF Trust and the persons identified as the
+            Copyright (c) 2025 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1173,7 +1181,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-nas-sizes" class="internal xref">NAS Sizes</a></p>
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-maximum-nas-sizes" class="internal xref">Maximum NAS Sizes</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.1">
                     <p id="section-toc.1-1.2.2.2.2.1.1"><a href="#section-2.2.1" class="auto internal xref">2.2.1</a>.  <a href="#name-example-2" class="internal xref">Example</a></p>
@@ -1190,9 +1198,31 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-using-is-is" class="internal xref">Using IS-IS</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+                    <p id="section-toc.1-1.3.2.1.2.1.1"><a href="#section-3.1.1" class="auto internal xref">3.1.1</a>.  <a href="#name-rld-advertisment" class="internal xref">RLD Advertisment</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.2">
+                    <p id="section-toc.1-1.3.2.1.2.2.1"><a href="#section-3.1.2" class="auto internal xref">3.1.2</a>.  <a href="#name-msd-nas-advertisement" class="internal xref">MSD-NAS Advertisement</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.3">
+                    <p id="section-toc.1-1.3.2.1.2.3.1"><a href="#section-3.1.3" class="auto internal xref">3.1.3</a>.  <a href="#name-supported-network-action-opc" class="internal xref">Supported Network Action Opcodes</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-using-ospf" class="internal xref">Using OSPF</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.1">
+                    <p id="section-toc.1-1.3.2.2.2.1.1"><a href="#section-3.2.1" class="auto internal xref">3.2.1</a>.  <a href="#name-rld-advertisment-2" class="internal xref">RLD Advertisment</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.2">
+                    <p id="section-toc.1-1.3.2.2.2.2.1"><a href="#section-3.2.2" class="auto internal xref">3.2.2</a>.  <a href="#name-msd-nas-advertisement-2" class="internal xref">MSD-NAS Advertisement</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.3">
+                    <p id="section-toc.1-1.3.2.2.2.3.1"><a href="#section-3.2.3" class="auto internal xref">3.2.3</a>.  <a href="#name-supported-network-action-opco" class="internal xref">Supported Network Action Opcodes</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -1214,10 +1244,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1267,7 +1294,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-the-readable-label-depth-rl">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-the-readable-label-depth-rl" class="section-name selfRef">The Readable Label Depth (RLD)</a>
         </h3>
-<p id="section-2.1-1">The readable label depth (RLD) is the number of LSEs an LSR can parse without performance impact<span>[<a href="#I-D.ietf-mpls-mna-fwk" class="cite xref">I-D.ietf-mpls-mna-fwk</a>]</span>.
+<p id="section-2.1-1">The Readable Label Depth (RLD) is the number of LSEs an LSR can parse without performance impact<span>[<a href="#I-D.ietf-mpls-mna-fwk" class="cite xref">I-D.ietf-mpls-mna-fwk</a>]</span>.
 An LSR is required to search the MPLS stack for Network-Action Substacks (NAS) that have to be processed by this node.
 The ingress LER that pushes the network actions <span class="bcp14">MUST</span> ensure that a hop-by-hop-scoped network action is readable at each LSR on the path, i.e., that it is placed within the RLD of each node.
 For this purpose, multiple copies of the hop-by-hop-scoped NAS may be placed in the stack.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
@@ -1311,22 +1338,30 @@ An RLD of 8 is required in this example to read the full MPLS stack.<a href="#se
 </div>
 </section>
 </div>
-<div id="nas-sizes">
+<div id="maximum-nas-sizes">
 <section id="section-2.2">
-        <h3 id="name-nas-sizes">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-nas-sizes" class="section-name selfRef">NAS Sizes</a>
+        <h3 id="name-maximum-nas-sizes">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-maximum-nas-sizes" class="section-name selfRef">Maximum NAS Sizes</a>
         </h3>
 <p id="section-2.2-1">A NAS in the MNA header encoding is at least 2 LSEs and at most 17 LSEs large<span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span>.
 At an LSR, at least two NAS, a select-scoped and a hop-by-hop-scoped NAS, are possible.
 With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to be able to process network actions.
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.
 Many use cases in the MNA framework<span>[<a href="#I-D.ietf-mpls-mna-use-cases" class="cite xref">I-D.ietf-mpls-mna-use-cases</a>]</span> do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
-Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.
-An LSR <span class="bcp14">SHOULD</span> signal the maximum-supported size of a NAS for each scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.
-Those parameters include the Format A, B, C, and D LSEs from <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> in a NAS.
-For select-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of the node the select-scoped NAS is destined for.
-For hop-by-hop-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of any node on the path.
-For I2E-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of the egress node.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">An LSR <span class="bcp14">SHOULD</span> signal the maximum-supported size of a NAS for each scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.
+Those parameters include the Format A, B, C, and D LSEs from <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> in a NAS.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.2-3.1">
+            <p id="section-2.2-3.1.1">For select-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of the node the select-scoped NAS is destined for.<a href="#section-2.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.2-3.2">
+            <p id="section-2.2-3.2.1">For hop-by-hop-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of any node on the path.<a href="#section-2.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.2-3.3">
+            <p id="section-2.2-3.3.1">For I2E-scoped NAS, the ingress LER <span class="bcp14">MUST NOT</span> push NAS to the MPLS stack that exceed the MNA capabilities of the egress node.<a href="#section-2.2-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 <div id="example-1">
 <section id="section-2.2.1">
           <h4 id="name-example-2">
@@ -1389,7 +1424,9 @@ In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-
 <section id="section-2.3">
         <h3 id="name-supported-network-action-op">
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-supported-network-action-op" class="section-name selfRef">Supported Network Action Opcodes</a>
-      </h3>
+        </h3>
+<p id="section-2.3-1">An LSR <span class="bcp14">MUST</span> signal the network action opcodes it supports.
+If a network action opcode is not signaled, it is assumed that this opcode is not supported by the node.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1399,18 +1436,115 @@ In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-
       <h2 id="name-signaling-mna-capabilites">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-signaling-mna-capabilites" class="section-name selfRef">Signaling MNA Capabilites</a>
       </h2>
+<p id="section-3-1">This section defines a method for IGP routers to advertise the maximum supportable numbers of LSEs in I2E-scoped NAS, Select-scoped NAS, and HBH-scoped NAS.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <div id="using-is-is">
 <section id="section-3.1">
         <h3 id="name-using-is-is">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-using-is-is" class="section-name selfRef">Using IS-IS</a>
-      </h3>
+        </h3>
+<p id="section-3.1-1">This section defines the signaling of maximum number of LSEs that can be supported for specific Network-Action Substacks (NAS) using IS-IS node and link advertisement.
+<span>[<a href="#rfc7981" class="cite xref">rfc7981</a>]</span> defines the IS-IS Router Capability TLV that supports optional sub-TLVs to signal capabilities.
+Further, <span>[<a href="#rfc8491" class="cite xref">rfc8491</a>]</span> introduces the Maximum SID Depth (MSD) that defines a sub-TLV for node- and link-specific advertisement based on <span>[<a href="#rfc7981" class="cite xref">rfc7981</a>]</span>.
+The MSD describes the number of LSEs a node is capable of imposing and is not restricted to Segment Routing (SR).
+In domains where SR is not enabled, the MSD defines the maximum label depth.
+MSD values may be signaled by the forwarding plane or may be provisioned by the control plane.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<div id="rld-advertisment">
+<section id="section-3.1.1">
+          <h4 id="name-rld-advertisment">
+<a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-rld-advertisment" class="section-name selfRef">RLD Advertisment</a>
+          </h4>
+<p id="section-3.1.1-1">For the Readable Label Depth advertisement, a sub-TLV is requested in <span>[<a href="#I-D.draft-ietf-mpls-mna-fwk" class="cite xref">I-D.draft-ietf-mpls-mna-fwk</a>]</span>.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="msd-nas-advertisement">
+<section id="section-3.1.2">
+          <h4 id="name-msd-nas-advertisement">
+<a href="#section-3.1.2" class="section-number selfRef">3.1.2. </a><a href="#name-msd-nas-advertisement" class="section-name selfRef">MSD-NAS Advertisement</a>
+          </h4>
+<p id="section-3.1.2-1">To signal the maximum numbers of LSEs for NAS with different scopes, this document introduces new sub-TLVs based on <span>[<a href="#rfc8491" class="cite xref">rfc8491</a>]</span>.
+The MSD-NAS Sub-TLV is defined node- or link-specific as below:<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
+<span id="name-node-msd-nas-sub-tlv"></span><div id="fig-is-is_signaling">
+<figure id="figure-3">
+            <div class="alignLeft art-text artwork" id="section-3.1.2-2.1">
+<pre>
+0                   1
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|    Type       |   Length      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| MSD-NAS Type  | MSD-NAS Value |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//     ...................     //
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| MSD-NAS Type  | MSD-NAS Value |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</pre>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-node-msd-nas-sub-tlv" class="selfRef">Node MSD-NAS Sub-TLV.</a>
+            </figcaption></figure>
+</div>
+<ul class="normal">
+<li class="normal" id="section-3.1.2-3.1">
+              <p id="section-3.1.2-3.1.1">Type: 15 (link-specifc) or 23 (node-specific) <span>[<a href="#rfc8491" class="cite xref">rfc8491</a>]</span>.<a href="#section-3.1.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-3.2">
+              <p id="section-3.1.2-3.2.1">Length: variable (multiple of 2 octets); represents the total length of the Value field<a href="#section-3.1.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-3.3">
+              <p id="section-3.1.2-3.3.1">Value: field consists of one or more pairs of a 1-octet MSD-Type and 1-octet MSD-Value<a href="#section-3.1.2-3.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-3.4">
+              <p id="section-3.1.2-3.4.1">MSD-Type: value defined in the "IGP MSD-Types" registry created by the IANA Considerations section of this document (I2E, HBH, or Select).<a href="#section-3.1.2-3.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-3.5">
+              <p id="section-3.1.2-3.5.1">MSD-Value: number in the range of 2-17.<a href="#section-3.1.2-3.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-3.1.2-4">This sub-TLV is optional.
+The scope of the advertisement is specific to the deployment.<a href="#section-3.1.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="supported-network-action-opcodes-1">
+<section id="section-3.1.3">
+          <h4 id="name-supported-network-action-opc">
+<a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-supported-network-action-opc" class="section-name selfRef">Supported Network Action Opcodes</a>
+          </h4>
+<p id="section-3.1.3-1">tbd<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="using-ospf">
 <section id="section-3.2">
         <h3 id="name-using-ospf">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-using-ospf" class="section-name selfRef">Using OSPF</a>
-      </h3>
+        </h3>
+<p id="section-3.2-1">tbd<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<div id="rld-advertisment-1">
+<section id="section-3.2.1">
+          <h4 id="name-rld-advertisment-2">
+<a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-rld-advertisment-2" class="section-name selfRef">RLD Advertisment</a>
+          </h4>
+<p id="section-3.2.1-1">tbd<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="msd-nas-advertisement-1">
+<section id="section-3.2.2">
+          <h4 id="name-msd-nas-advertisement-2">
+<a href="#section-3.2.2" class="section-number selfRef">3.2.2. </a><a href="#name-msd-nas-advertisement-2" class="section-name selfRef">MSD-NAS Advertisement</a>
+          </h4>
+<p id="section-3.2.2-1">tbd<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="supported-network-action-opcodes-2">
+<section id="section-3.2.3">
+          <h4 id="name-supported-network-action-opco">
+<a href="#section-3.2.3" class="section-number selfRef">3.2.3. </a><a href="#name-supported-network-action-opco" class="section-name selfRef">Supported Network Action Opcodes</a>
+          </h4>
+<p id="section-3.2.3-1">tbd<a href="#section-3.2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -1420,7 +1554,7 @@ In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-
       <h2 id="name-security-considerations">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-4-1">The security issues discussed in <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> apply to this document.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">The security issues discussed in <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> and <span>[<a href="#rfc8491" class="cite xref">rfc8491</a>]</span> apply to this document.<a href="#section-4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1428,7 +1562,51 @@ In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-
       <h2 id="name-iana-considerations">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-5-1">This document has no IANA actions.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">This docuement requests the allocation of following codepoints in the "IGP MSD-Types.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<span id="name-igp-signaling-sub-tlv-alloc"></span><div id="table_iana">
+<table class="center" id="table-1">
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-igp-signaling-sub-tlv-alloc" class="selfRef">IGP Signaling Sub-TLV allocation.</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Value</th>
+            <th class="text-left" rowspan="1" colspan="1">Name</th>
+            <th class="text-left" rowspan="1" colspan="1">Data Plane</th>
+            <th class="text-left" rowspan="1" colspan="1">Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">3</td>
+            <td class="text-left" rowspan="1" colspan="1">Readable Label Depth</td>
+            <td class="text-left" rowspan="1" colspan="1">MPLS</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#I-D.draft-ietf-mpls-mna-fwk" class="cite xref">I-D.draft-ietf-mpls-mna-fwk</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">4</td>
+            <td class="text-left" rowspan="1" colspan="1">MSD of select-scoped NAS</td>
+            <td class="text-left" rowspan="1" colspan="1">MPLS</td>
+            <td class="text-left" rowspan="1" colspan="1">This document</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">5</td>
+            <td class="text-left" rowspan="1" colspan="1">MSD of I2E-scoped NAS</td>
+            <td class="text-left" rowspan="1" colspan="1">MPLS</td>
+            <td class="text-left" rowspan="1" colspan="1">This document</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">6</td>
+            <td class="text-left" rowspan="1" colspan="1">MSD of HBH-scoped NAS</td>
+            <td class="text-left" rowspan="1" colspan="1">MPLS</td>
+            <td class="text-left" rowspan="1" colspan="1">This document</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -1459,33 +1637,37 @@ In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="I-D.draft-ietf-mpls-mna-fwk">[I-D.draft-ietf-mpls-mna-fwk]</dt>
+        <dd>
+<span class="refAuthor">Andersson, L.</span>, <span class="refAuthor">Bryant, S.</span>, <span class="refAuthor">Bocci, M.</span>, and <span class="refAuthor">T. Li</span>, <span class="refTitle">"MPLS Network Actions (MNA) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-fwk-15</span>, <time datetime="2024-12-27" class="refDate">27 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-15">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-15</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-mpls-mna-fwk">[I-D.ietf-mpls-mna-fwk]</dt>
         <dd>
-<span class="refAuthor">Andersson, L.</span>, <span class="refAuthor">Bryant, S.</span>, <span class="refAuthor">Bocci, M.</span>, and <span class="refAuthor">T. Li</span>, <span class="refTitle">"MPLS Network Actions (MNA) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-fwk-13</span>, <time datetime="2024-11-18" class="refDate">18 November 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-13">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-13</a>&gt;</span>. </dd>
+<span class="refAuthor">Andersson, L.</span>, <span class="refAuthor">Bryant, S.</span>, <span class="refAuthor">Bocci, M.</span>, and <span class="refAuthor">T. Li</span>, <span class="refTitle">"MPLS Network Actions (MNA) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-fwk-15</span>, <time datetime="2024-12-27" class="refDate">27 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-15">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-fwk-15</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mpls-mna-hdr">[I-D.ietf-mpls-mna-hdr]</dt>
         <dd>
-<span class="refAuthor">Rajamanickam, J.</span>, <span class="refAuthor">Gandhi, R.</span>, <span class="refAuthor">Zigler, R.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">K. Kompella</span>, <span class="refTitle">"MPLS Network Action (MNA) Sub-Stack Solution"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-hdr-08</span>, <time datetime="2024-08-30" class="refDate">30 August 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-08">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Rajamanickam, J.</span>, <span class="refAuthor">Gandhi, R.</span>, <span class="refAuthor">Zigler, R.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">K. Kompella</span>, <span class="refTitle">"MPLS Network Action (MNA) Sub-Stack Solution"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-hdr-11</span>, <time datetime="2025-02-17" class="refDate">17 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mpls-mna-use-cases">[I-D.ietf-mpls-mna-use-cases]</dt>
-      <dd>
+        <dd>
 <span class="refTitle">"*** BROKEN REFERENCE ***"</span>. </dd>
+<dd class="break"></dd>
+<dt id="rfc7981">[rfc7981]</dt>
+        <dd>
+<span class="refAuthor">Ginsberg, L.</span>, <span class="refAuthor">Previdi, S.</span>, and <span class="refAuthor">M. Chen</span>, <span class="refTitle">"IS-IS Extensions for Advertising Router Information"</span>, <span class="seriesInfo">RFC 7981</span>, <span class="seriesInfo">DOI 10.17487/RFC7981</span>, <time datetime="2016-10" class="refDate">October 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7981">https://www.rfc-editor.org/rfc/rfc7981</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="rfc8491">[rfc8491]</dt>
+      <dd>
+<span class="refAuthor">Tantsura, J.</span>, <span class="refAuthor">Chunduri, U.</span>, <span class="refAuthor">Aldrin, S.</span>, and <span class="refAuthor">L. Ginsberg</span>, <span class="refTitle">"Signaling Maximum SID Depth (MSD) Using IS-IS"</span>, <span class="seriesInfo">RFC 8491</span>, <span class="seriesInfo">DOI 10.17487/RFC8491</span>, <time datetime="2018-11" class="refDate">November 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8491">https://www.rfc-editor.org/rfc/rfc8491</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
 </section>
 </div>
-<div id="acknowledgments">
-<section id="appendix-A">
-      <h2 id="name-acknowledgments">
-<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
-      </h2>
-<p id="appendix-A-1">TODO acknowledge.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-A">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

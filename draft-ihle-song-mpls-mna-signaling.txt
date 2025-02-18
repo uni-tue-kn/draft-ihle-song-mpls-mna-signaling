@@ -5,10 +5,10 @@
 Network Working Group                                            F. Ihle
 Internet-Draft                                   University of Tuebingen
 Intended status: Informational                                   X. Song
-Expires: 26 May 2025                                     ZTE Corporation
+Expires: 22 August 2025                                  ZTE Corporation
                                                                 M. Menth
                                                  University of Tuebingen
-                                                        22 November 2024
+                                                        18 February 2025
 
 
                   Signaling MNA Capabilities Using IGP
@@ -16,7 +16,11 @@ Expires: 26 May 2025                                     ZTE Corporation
 
 Abstract
 
-   TODO Abstract
+   This document defines capabilities of nodes supporting MPLS Network
+   Actions (MNA) and how to signal them using IS-IS and OSPF.  The
+   capabilities include the Readable Label Depth (RLD), supported
+   network action opcodes, and the maximum sizes of differently scoped
+   NAS.  For IS-IS routers, a sub-TLVs encoding is leveraged.
 
 About This Document
 
@@ -46,11 +50,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 May 2025.
+   This Internet-Draft will expire on 22 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -70,18 +74,23 @@ Table of Contents
    2.  Definition of MNA Capabilities
      2.1.  The Readable Label Depth (RLD)
        2.1.1.  Example
-     2.2.  NAS Sizes
+     2.2.  Maximum NAS Sizes
        2.2.1.  Example
      2.3.  Supported Network Action Opcodes
    3.  Signaling MNA Capabilites
      3.1.  Using IS-IS
+       3.1.1.  RLD Advertisment
+       3.1.2.  MSD-NAS Advertisement
+       3.1.3.  Supported Network Action Opcodes
      3.2.  Using OSPF
+       3.2.1.  RLD Advertisment
+       3.2.2.  MSD-NAS Advertisement
+       3.2.3.  Supported Network Action Opcodes
    4.  Security Considerations
    5.  IANA Considerations
    6.  References
      6.1.  Normative References
      6.2.  Informative References
-   Acknowledgments
    Authors' Addresses
 
 1.  Introduction
@@ -121,7 +130,7 @@ Table of Contents
 
 2.1.  The Readable Label Depth (RLD)
 
-   The readable label depth (RLD) is the number of LSEs an LSR can parse
+   The Readable Label Depth (RLD) is the number of LSEs an LSR can parse
    without performance impact[I-D.ietf-mpls-mna-fwk].  An LSR is
    required to search the MPLS stack for Network-Action Substacks (NAS)
    that have to be processed by this node.  The ingress LER that pushes
@@ -160,7 +169,7 @@ Table of Contents
         Figure 1: Example MPLS stack of 8 MPLS LSE illustrating the
                               concept of RLD.
 
-2.2.  NAS Sizes
+2.2.  Maximum NAS Sizes
 
    A NAS in the MNA header encoding is at least 2 LSEs and at most 17
    LSEs large[I-D.ietf-mpls-mna-hdr].  At an LSR, at least two NAS, a
@@ -174,17 +183,23 @@ Table of Contents
    Therefore, by signaling the maximum-supported NAS size of an MNA
    implementation from an LSR to an ingress LER, the allocated resources
    for NAS can be reduced and more resources are available for other
-   purposes.  An LSR SHOULD signal the maximum-supported size of a NAS
-   for each scope, i.e., the parameters maxLSEs_NAS^Sel,
-   maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.  Those parameters include the
-   Format A, B, C, and D LSEs from [I-D.ietf-mpls-mna-hdr] in a NAS.
-   For select-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS
-   stack that exceed the MNA capabilities of the node the select-scoped
-   NAS is destined for.  For hop-by-hop-scoped NAS, the ingress LER MUST
-   NOT push NAS to the MPLS stack that exceed the MNA capabilities of
-   any node on the path.  For I2E-scoped NAS, the ingress LER MUST NOT
-   push NAS to the MPLS stack that exceed the MNA capabilities of the
-   egress node.
+   purposes.
+
+   An LSR SHOULD signal the maximum-supported size of a NAS for each
+   scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and
+   maxLSEs_NAS^I2E.  Those parameters include the Format A, B, C, and D
+   LSEs from [I-D.ietf-mpls-mna-hdr] in a NAS.
+
+   *  For select-scoped NAS, the ingress LER MUST NOT push NAS to the
+      MPLS stack that exceed the MNA capabilities of the node the
+      select-scoped NAS is destined for.
+
+   *  For hop-by-hop-scoped NAS, the ingress LER MUST NOT push NAS to
+      the MPLS stack that exceed the MNA capabilities of any node on the
+      path.
+
+   *  For I2E-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS
+      stack that exceed the MNA capabilities of the egress node.
 
 2.2.1.  Example
 
@@ -235,20 +250,120 @@ Table of Contents
 
 2.3.  Supported Network Action Opcodes
 
+   An LSR MUST signal the network action opcodes it supports.  If a
+   network action opcode is not signaled, it is assumed that this opcode
+   is not supported by the node.
+
 3.  Signaling MNA Capabilites
+
+   This section defines a method for IGP routers to advertise the
+   maximum supportable numbers of LSEs in I2E-scoped NAS, Select-scoped
+   NAS, and HBH-scoped NAS.
 
 3.1.  Using IS-IS
 
+   This section defines the signaling of maximum number of LSEs that can
+   be supported for specific Network-Action Substacks (NAS) using IS-IS
+   node and link advertisement. [rfc7981] defines the IS-IS Router
+   Capability TLV that supports optional sub-TLVs to signal
+   capabilities.  Further, [rfc8491] introduces the Maximum SID Depth
+   (MSD) that defines a sub-TLV for node- and link-specific
+   advertisement based on [rfc7981].  The MSD describes the number of
+   LSEs a node is capable of imposing and is not restricted to Segment
+   Routing (SR).  In domains where SR is not enabled, the MSD defines
+   the maximum label depth.  MSD values may be signaled by the
+   forwarding plane or may be provisioned by the control plane.
+
+3.1.1.  RLD Advertisment
+
+   For the Readable Label Depth advertisement, a sub-TLV is requested in
+   [I-D.draft-ietf-mpls-mna-fwk].
+
+3.1.2.  MSD-NAS Advertisement
+
+   To signal the maximum numbers of LSEs for NAS with different scopes,
+   this document introduces new sub-TLVs based on [rfc8491].  The MSD-
+   NAS Sub-TLV is defined node- or link-specific as below:
+
+   0                   1
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |    Type       |   Length      |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   | MSD-NAS Type  | MSD-NAS Value |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   //     ...................     //
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   | MSD-NAS Type  | MSD-NAS Value |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                      Figure 3: Node MSD-NAS Sub-TLV.
+
+   *  Type: 15 (link-specifc) or 23 (node-specific) [rfc8491].
+
+   *  Length: variable (multiple of 2 octets); represents the total
+      length of the Value field
+
+   *  Value: field consists of one or more pairs of a 1-octet MSD-Type
+      and 1-octet MSD-Value
+
+   *  MSD-Type: value defined in the "IGP MSD-Types" registry created by
+      the IANA Considerations section of this document (I2E, HBH, or
+      Select).
+
+   *  MSD-Value: number in the range of 2-17.
+
+   This sub-TLV is optional.  The scope of the advertisement is specific
+   to the deployment.
+
+3.1.3.  Supported Network Action Opcodes
+
+   tbd
+
 3.2.  Using OSPF
+
+   tbd
+
+3.2.1.  RLD Advertisment
+
+   tbd
+
+3.2.2.  MSD-NAS Advertisement
+
+   tbd
+
+3.2.3.  Supported Network Action Opcodes
+
+   tbd
 
 4.  Security Considerations
 
-   The security issues discussed in [I-D.ietf-mpls-mna-hdr] apply to
-   this document.
+   The security issues discussed in [I-D.ietf-mpls-mna-hdr] and
+   [rfc8491] apply to this document.
 
 5.  IANA Considerations
 
-   This document has no IANA actions.
+   This docuement requests the allocation of following codepoints in the
+   "IGP MSD-Types.
+
+    +=======+================+=======+===============================+
+    | Value | Name           | Data  | Reference                     |
+    |       |                | Plane |                               |
+    +=======+================+=======+===============================+
+    | 3     | Readable Label | MPLS  | [I-D.draft-ietf-mpls-mna-fwk] |
+    |       | Depth          |       |                               |
+    +-------+----------------+-------+-------------------------------+
+    | 4     | MSD of select- | MPLS  | This document                 |
+    |       | scoped NAS     |       |                               |
+    +-------+----------------+-------+-------------------------------+
+    | 5     | MSD of I2E-    | MPLS  | This document                 |
+    |       | scoped NAS     |       |                               |
+    +-------+----------------+-------+-------------------------------+
+    | 6     | MSD of HBH-    | MPLS  | This document                 |
+    |       | scoped NAS     |       |                               |
+    +-------+----------------+-------+-------------------------------+
+
+                Table 1: IGP Signaling Sub-TLV allocation.
 
 6.  References
 
@@ -265,27 +380,40 @@ Table of Contents
 
 6.2.  Informative References
 
+   [I-D.draft-ietf-mpls-mna-fwk]
+              Andersson, L., Bryant, S., Bocci, M., and T. Li, "MPLS
+              Network Actions (MNA) Framework", Work in Progress,
+              Internet-Draft, draft-ietf-mpls-mna-fwk-15, 27 December
+              2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              mpls-mna-fwk-15>.
+
    [I-D.ietf-mpls-mna-fwk]
               Andersson, L., Bryant, S., Bocci, M., and T. Li, "MPLS
               Network Actions (MNA) Framework", Work in Progress,
-              Internet-Draft, draft-ietf-mpls-mna-fwk-13, 18 November
+              Internet-Draft, draft-ietf-mpls-mna-fwk-15, 27 December
               2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              mpls-mna-fwk-13>.
+              mpls-mna-fwk-15>.
 
    [I-D.ietf-mpls-mna-hdr]
               Rajamanickam, J., Gandhi, R., Zigler, R., Song, H., and K.
               Kompella, "MPLS Network Action (MNA) Sub-Stack Solution",
               Work in Progress, Internet-Draft, draft-ietf-mpls-mna-hdr-
-              08, 30 August 2024,
+              11, 17 February 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mpls-
-              mna-hdr-08>.
+              mna-hdr-11>.
 
    [I-D.ietf-mpls-mna-use-cases]
               "*** BROKEN REFERENCE ***".
 
-Acknowledgments
+   [rfc7981]  Ginsberg, L., Previdi, S., and M. Chen, "IS-IS Extensions
+              for Advertising Router Information", RFC 7981,
+              DOI 10.17487/RFC7981, October 2016,
+              <https://www.rfc-editor.org/rfc/rfc7981>.
 
-   TODO acknowledge.
+   [rfc8491]  Tantsura, J., Chunduri, U., Aldrin, S., and L. Ginsberg,
+              "Signaling Maximum SID Depth (MSD) Using IS-IS", RFC 8491,
+              DOI 10.17487/RFC8491, November 2018,
+              <https://www.rfc-editor.org/rfc/rfc8491>.
 
 Authors' Addresses
 
