@@ -101,7 +101,7 @@ A NAS in the MNA header encoding is at least 2 LSEs and at most 17 LSEs large{{?
 At an LSR, at least two NAS, a select-scoped and a hop-by-hop-scoped NAS, are possible.
 With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to be able to process network actions.
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.
-Many use cases in the MNA framework{{?I-D.ietf-mpls-mna-use-cases}} do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
+Many use cases in the MNA framework{{?I-D.ietf-mpls-mna-usecases}} do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
 Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.
 
 An LSR SHOULD signal the maximum-supported size of a NAS for each scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.
