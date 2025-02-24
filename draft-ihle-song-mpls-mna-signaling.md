@@ -1,7 +1,7 @@
 ---
 title: "Signaling MNA Capabilities Using IGP"
 abbrev: "SIG"
-category: info
+category: std
 
 docname: draft-ihle-song-mpls-mna-signaling-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -9,17 +9,17 @@ number:
 date:
 consensus: true
 v: 3
-# area: AREA
-# workgroup: WG Working Group
+area: "Routing"
+workgroup: "Multiprotocol Label Switching"
 keyword:
  - signaling
  - mpls
  - mna
 venue:
-#  group: WG
-#  type: Working Group
-#  mail: WG@example.com
-#  arch: https://example.com/WG
+  group: "Multiprotocol Label Switching"
+  type: "Working Group"
+  mail: "mpls@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/mpls/"
   github: "uni-tue-kn/draft-ihle-song-mpls-mna-signaling"
   latest: "https://uni-tue-kn.github.io/draft-ihle-song-mpls-mna-signaling/draft-ihle-song-mpls-mna-signaling.html"
 
@@ -50,9 +50,8 @@ informative:
 --- abstract
 
 This document defines capabilities of nodes supporting MPLS Network Actions (MNA) and how to signal them using IS-IS and OSPF.
-The capabilities include the Readable Label Depth (RLD), supported network action opcodes, and the maximum sizes of differently scoped NAS.
-For IS-IS routers, a sub-TLVs encoding is leveraged.
-
+The capabilities include the Readable Label Depth (RLD), supported network action opcodes, and the maximum sizes of differently scoped Network Action Sub-stacks (NAS).
+For IS-IS and OSPF signaling, sub-TLV encodings based on existing mechanisms to signal node- and link-specific capabilities are leveraged.
 
 --- middle
 
@@ -88,7 +87,7 @@ For this purpose, multiple copies of the hop-by-hop-scoped NAS may be placed in 
 ### Example
 
 An example for the RLD parameter is given in {{fig-rld_example}}. With an RLD of 5, an LSR is capable of reading labels A, B, C, D, and E but not D.
-An RLD of 8 is required in this example to read the full MPLS stack.
+An RLD of 8 is required in this example to read the entire MPLS stack.
 
 ~~~~
 {::include ./drawings/rld_example.txt}
@@ -96,24 +95,35 @@ An RLD of 8 is required in this example to read the full MPLS stack.
 {: #fig-rld_example title="Example MPLS stack of 8 MPLS LSE illustrating the concept of RLD."}
 
 ## Maximum NAS Sizes
+This section gives a motivation for signaling maximum NAS sizes and then introduces the Maximum Label Depth (MLD).
 
-A NAS in the MNA header encoding is at least 2 LSEs and at most 17 LSEs large{{?I-D.ietf-mpls-mna-hdr}}.
+### Motivation
+A NAS in the MNA header encoding is at least 2 LSEs and at most 17 LSEs large {{?I-D.ietf-mpls-mna-hdr}}.
 At an LSR, at least two NAS, a select-scoped and a hop-by-hop-scoped NAS, are possible.
 With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to be able to process network actions.
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.
+
 Many use cases in the MNA framework{{?I-D.ietf-mpls-mna-usecases}} do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
 Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.
 
-An LSR SHOULD signal the maximum-supported size of a NAS for each scope, i.e., the parameters maxLSEs_NAS^Sel, maxLSEs_NAS^HBH, and maxLSEs_NAS^I2E.
+### Maximum Label Depth per NAS (NAS-MLD)
+The Maximum SID Depth (MSD) describes the number of SIDs a node is capable of imposing {{?rfc8491}}, {{?rfc8476}}.
+The concept of MSD is not restricted to Segment Routing (SR).
+In domains where SR is not enabled, the MSD defines the maximum label depth {{?rfc8491}}.
+For clarity, we refer to this value as Maximum Label Depth (MLD) in this document.
+The maximum number of LSEs in a specific NAS is referred to as NAS-MLD.
+MLD values may be signaled by the forwarding plane or may be provisioned by the control plane.
+
+An LSR SHOULD signal the maximum-supported size of a NAS for each scope, i.e., the parameters NAS-MLD^Sel, NAS-MLD^HBH, and NAS-MLD^I2E.
 Those parameters include the Format A, B, C, and D LSEs from {{?I-D.ietf-mpls-mna-hdr}} in a NAS.
 
 - For select-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS stack that exceed the MNA capabilities of the node the select-scoped NAS is destined for.
-- For hop-by-hop-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS stack that exceed the MNA capabilities of any node on the path.
-- For I2E-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS stack that exceed the MNA capabilities of the egress node.
+- For hop-by-hop-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS stack that exceed the MNA capabilities of any node or link on the path.
+- For I2E-scoped NAS, the ingress LER MUST NOT push NAS to the MPLS stack that exceed the MNA capabilities of the egress node or link.
 
 ### Example
 
-{{fig-rld_example}} illustrates the different NAS sizes in an MPLS stack that are signaled to the LSR.
+{{fig-rld_example}} illustrates the different NAS-MLD sizes in an MPLS stack that are signaled to the LSR.
 In this example, a select-scoped NAS has a maximum size of 4 LSEs, a hop-by-hop-scoped NAS of 7 LSEs, and an I2E-scoped NAS of 4 LSEs.
 
 ~~~~
@@ -127,61 +137,78 @@ An LSR MUST signal the network action opcodes it supports.
 If a network action opcode is not signaled, it is assumed that this opcode is not supported by the node.
 
 # Signaling MNA Capabilites
-This section defines a method for IGP routers to advertise the maximum supportable numbers of LSEs in I2E-scoped NAS, Select-scoped NAS, and HBH-scoped NAS.
+This section defines a method for IGP routers to advertise the maximum supportable numbers of LSEs in I2E-scoped NAS, Select-scoped NAS, and HBH-scoped NAS, i.e., the per-scope NAS-MLD, with IS-IS and OSPF.
 
 ## Using IS-IS
-This section defines the signaling of maximum number of LSEs that can be supported for specific Network-Action Substacks (NAS) using IS-IS node and link advertisement.
+This section defines the signaling of NAS-MLD and RLD that can be supported for specific Network-Action Substacks (NAS) using IS-IS node and link advertisement.
 {{?rfc7981}} defines the IS-IS Router Capability TLV that supports optional sub-TLVs to signal capabilities.
-Further, {{?rfc8491}} introduces the Maximum SID Depth (MSD) that defines a sub-TLV for node- and link-specific advertisement based on {{?rfc7981}}.
-The MSD describes the number of LSEs a node is capable of imposing and is not restricted to Segment Routing (SR).
-In domains where SR is not enabled, the MSD defines the maximum label depth.
-MSD values may be signaled by the forwarding plane or may be provisioned by the control plane.
+Further, {{?rfc8491}} introduces a sub-TLV for node- and link-specific advertisement based on {{?rfc7981}}.
 
-### RLD Advertisment
-For the Readable Label Depth advertisement, a sub-TLV is requested in {{?I-D.draft-ietf-mpls-mna-fwk}}.
-
-### MSD-NAS Advertisement
+### NAS-MLD Advertisement
 To signal the maximum numbers of LSEs for NAS with different scopes, this document introduces new sub-TLVs based on {{?rfc8491}}.
-The MSD-NAS Sub-TLV is defined node- or link-specific as below:
+The NAS-MLD Sub-TLV is defined node- or link-specific as below:
 
 ~~~~
 {::include ./drawings/is-is_signaling.txt}
 ~~~~
-{: #fig-is-is_signaling title="Node MSD-NAS Sub-TLV."}
+{: #fig-is-is_signaling title="NAS-MLD Sub-TLV for IS-IS signaling."}
 
-- Type: 15 (link-specifc) or 23 (node-specific) {{?rfc8491}}.
+- Type:
+   - 15 (link-specifc) {{?rfc8491}}
+   - 23 (node-specific) {{?rfc8491}}
 - Length: variable (multiple of 2 octets); represents the total length of the Value field
 - Value: field consists of one or more pairs of a 1-octet MSD-Type and 1-octet MSD-Value
-- MSD-Type: value defined in the "IGP MSD-Types" registry created by the IANA Considerations section of this document (I2E, HBH, or Select).
-- MSD-Value: number in the range of 2-17.
+   - NAS-MLD-Type: value defined in the "IGP MSD-Types" registry created by the IANA Considerations section of this document (I2E, HBH, or Select).
+   - NAS-MLD-Value: number in the range of 2-17.
 
 This sub-TLV is optional.
 The scope of the advertisement is specific to the deployment.
+
+### RLD Advertisment
+For the Readable Label Depth advertisement, a sub-TLV based on {{?rfc8491}} is requested in {{?I-D.draft-ietf-mpls-mna-fwk}}.
 
 ### Supported Network Action Opcodes
 tbd
 
 ## Using OSPF
-tbd
+This section defines the signaling of NAS-MLD and RLD that can be supported for specific Network-Action Substacks (NAS) using OSPF node and link advertisement.
+{{?rfc7770}} defines the OSPF RI Opaque LSA which is used in {{?rfc8476}} to carry the node-specific provisioned SID depth of the router originating the Router Information (RI) LSA in a sub-TLV.
+Further, {{?rfc7684}} defines link-specific advertisements using the optional sub-TLV of the OSPFv2 Extended Link TLV for OSPFv2, and {{?rfc8362}} defines link-specific advertisements using the optional sub-TLV of the E-Router-LSA TLV.
+
+### NAS-MLD Advertisement
+To signal the maximum numbers of LSEs for NAS with different scopes, this document introduces new sub-TLVs based on {{?rfc7684}}, {{?rfc8476}}, and {{?rfc8362}}.
+The NAS-MLD Sub-TLV is defined node- or link-specific as below:
+
+~~~~
+{::include ./drawings/ospf_signaling.txt}
+~~~~
+{: #fig-ospf_signaling title="NAS-MLD Sub-TLV for OSPF signaling."}
+
+- Type:
+    - 6 (link-specific, OSPFv2 {{?RFC7684}})
+    - 9 (link-specific, OSPFv3 {{?RFC8362}})
+    - 12 (node-specific, OSPFv2 and OSPFv3 {{?rfc8476}})
+- Length: variable (in octets); represents the total length of the Value field
+- Value: field consists of one or more pairs of a 2-octet MSD-Type and 2-octet MSD-Value
+   - NAS-MLD-Type: value defined in the "IGP MSD-Types" registry created by the IANA Considerations section of this document (I2E, HBH, or Select).
+   - NAS-MLD-Value: number in the range of 2-17.
+
+This sub-TLV is optional.
+The scope of the advertisement is specific to the deployment.
 
 ### RLD Advertisment
-tbd
-
-### MSD-NAS Advertisement
-tbd
+For the Readable Label Depth advertisement, a sub-TLV is requested in {{?I-D.draft-ietf-mpls-mna-fwk}}.
 
 ### Supported Network Action Opcodes
 tbd
 
 # Security Considerations
 
-The security issues discussed in {{?I-D.ietf-mpls-mna-hdr}} and {{?rfc8491}} apply to this document.
-
-
+The security issues discussed in {{?I-D.ietf-mpls-mna-hdr}}, {{?rfc8476}}, and {{?rfc8491}} apply to this document.
 
 # IANA Considerations
 
-This docuement requests the allocation of following codepoints in the "IGP MSD-Types.
+This docuement requests the allocation of following codepoints in the "IGP MSD-Types" registry.
 
 | Value |  Name  | Data Plane                      |  Reference
 | ---------- |  -------------------------------- |  -------------------
