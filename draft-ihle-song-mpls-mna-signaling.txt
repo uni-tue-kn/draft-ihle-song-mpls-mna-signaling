@@ -428,13 +428,13 @@ Table of Contents
     | 3     | Readable Label | MPLS  | [I-D.draft-ietf-mpls-mna-fwk] |
     |       | Depth          |       |                               |
     +-------+----------------+-------+-------------------------------+
-    | 4     | MSD of select- | MPLS  | This document                 |
+    | 4     | MLD of select- | MPLS  | This document                 |
     |       | scoped NAS     |       |                               |
     +-------+----------------+-------+-------------------------------+
-    | 5     | MSD of I2E-    | MPLS  | This document                 |
+    | 5     | MLD of I2E-    | MPLS  | This document                 |
     |       | scoped NAS     |       |                               |
     +-------+----------------+-------+-------------------------------+
-    | 6     | MSD of HBH-    | MPLS  | This document                 |
+    | 6     | MLD of HBH-    | MPLS  | This document                 |
     |       | scoped NAS     |       |                               |
     +-------+----------------+-------+-------------------------------+
 
