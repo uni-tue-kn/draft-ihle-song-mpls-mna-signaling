@@ -213,9 +213,9 @@ This docuement requests the allocation of following codepoints in the "IGP MSD-T
 | Value |  Name  | Data Plane                      |  Reference
 | ---------- |  -------------------------------- |  -------------------
 |    3    |  Readable Label Depth | MPLS |  {{?I-D.draft-ietf-mpls-mna-fwk}}
-|    4    |  MSD of select-scoped NAS | MPLS |  This document
-|    5    |  MSD of I2E-scoped NAS | MPLS |   This document
-|    6    |  MSD of HBH-scoped NAS | MPLS |  This document
+|    4    |  MLD of select-scoped NAS | MPLS |  This document
+|    5    |  MLD of I2E-scoped NAS | MPLS |   This document
+|    6    |  MLD of HBH-scoped NAS | MPLS |  This document
 {: #table_iana title="IGP Signaling Sub-TLV allocation."}
 
 --- back
