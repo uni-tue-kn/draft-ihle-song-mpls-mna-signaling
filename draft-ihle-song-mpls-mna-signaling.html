@@ -13,20 +13,20 @@
 The capabilities include the Readable Label Depth (RLD), supported network action opcodes, and the maximum sizes of differently scoped Network Action Sub-stacks (NAS).
 For IS-IS and OSPF signaling, sub-TLV encodings based on existing mechanisms to signal node- and link-specific capabilities are leveraged. 
     " name="description">
-<meta content="xml2rfc 3.27.0" name="generator">
+<meta content="xml2rfc 3.28.1" name="generator">
 <meta content="signaling" name="keyword">
 <meta content="mpls" name="keyword">
 <meta content="mna" name="keyword">
 <meta content="draft-ihle-song-mpls-mna-signaling-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.27.0
-    Python 3.12.9
+  xml2rfc 3.28.1
+    Python 3.12.10
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.5
+    Jinja2 3.1.6
     lxml 5.3.0
-    platformdirs 4.3.6
+    platformdirs 4.3.7
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.3
@@ -1050,11 +1050,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">SIG</td>
-<td class="right">February 2025</td>
+<td class="right">May 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ihle, et al.</td>
-<td class="center">Expires 28 August 2025</td>
+<td class="center">Expires 15 November 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ihle-song-mpls-mna-signaling-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-24" class="published">24 February 2025</time>
+<time datetime="2025-05-14" class="published">14 May 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-28">28 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-11-15">15 November 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1132,7 +1132,7 @@ For IS-IS and OSPF signaling, sub-TLV encodings based on existing mechanisms to 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 November 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1266,10 +1266,10 @@ For IS-IS and OSPF signaling, sub-TLV encodings based on existing mechanisms to 
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">With the MPLS Network Action (MNA) framework, network actions are encoded in the MPLS stack.
+<p id="section-1-1">With the MPLS Network Action (MNA) framework, network actions are encoded in the MPLS stack using in-stack data (ISD).
 <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> defines the encoding of such network actions and their data in the MPLS stack.
 These network actions are processed by all nodes on a path (hop-by-hop), by only selected nodes, or on an ingress-to-egress basis.
-LSRs have different capabilites that result from the available hardware resources.
+LSRs have different capabilites that result from the available hardware resources, e.g., the number of LSEs they can parse.
 An ingress LER that pushes network actions to an MPLS stack <span class="bcp14">MUST</span> ensure that all nodes on the path can read and support the network actions.
 For that purpose, the MNA capabilities of an LSR need to be signaled to the ingress LER.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This document defines the required parameters of LSRs regarding their MNA capability and proposes a signaling extension using IGP such as IS-IS and OSPF.<a href="#section-1-2" class="pilcrow">¶</a></p>
@@ -1307,6 +1307,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         </h3>
 <p id="section-2.1-1">The Readable Label Depth (RLD) is the number of LSEs an LSR can parse without performance impact<span>[<a href="#I-D.ietf-mpls-mna-fwk" class="cite xref">I-D.ietf-mpls-mna-fwk</a>]</span>.
 An LSR is required to search the MPLS stack for Network-Action Substacks (NAS) that have to be processed by this node.
+For that purpose, the network actions must be within the RLD of a node.
 The ingress LER that pushes the network actions <span class="bcp14">MUST</span> ensure that a hop-by-hop-scoped network action is readable at each LSR on the path, i.e., that it is placed within the RLD of each node.
 For this purpose, multiple copies of the hop-by-hop-scoped NAS may be placed in the stack.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <div id="example">
@@ -1314,7 +1315,7 @@ For this purpose, multiple copies of the hop-by-hop-scoped NAS may be placed in 
           <h4 id="name-example">
 <a href="#section-2.1.1" class="section-number selfRef">2.1.1. </a><a href="#name-example" class="section-name selfRef">Example</a>
           </h4>
-<p id="section-2.1.1-1">An example for the RLD parameter is given in <a href="#fig-rld_example" class="auto internal xref">Figure 1</a>. With an RLD of 5, an LSR is capable of reading labels A, B, C, D, and E but not D.
+<p id="section-2.1.1-1">An example for the RLD parameter is given in <a href="#fig-rld_example" class="auto internal xref">Figure 1</a>. With an RLD of 5, an LSR is capable of reading labels A, B, C, D, and E but not F.
 An RLD of 8 is required in this example to read the entire MPLS stack.<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
 <span id="name-example-mpls-stack-of-8-mpl"></span><div id="fig-rld_example">
 <figure id="figure-1">
@@ -1342,7 +1343,7 @@ An RLD of 8 is required in this example to read the entire MPLS stack.<a href="#
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-example-mpls-stack-of-8-mpl" class="selfRef">Example MPLS stack of 8 MPLS LSE illustrating the concept of RLD.</a>
+<a href="#name-example-mpls-stack-of-8-mpl" class="selfRef">Example MPLS stack of 8 MPLS LSEs illustrating the concept of RLD.</a>
             </figcaption></figure>
 </div>
 </section>
@@ -1365,7 +1366,8 @@ At an LSR, at least two NAS, a select-scoped and a hop-by-hop-scoped NAS, are po
 With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to be able to process network actions.
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.<a href="#section-2.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.2.1-2">Many use cases in the MNA framework<span>[<a href="#I-D.ietf-mpls-mna-usecases" class="cite xref">I-D.ietf-mpls-mna-usecases</a>]</span> do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
-Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.<a href="#section-2.2.1-2" class="pilcrow">¶</a></p>
+However, a node must signal the maximum NAS size it supports to the ingress LER to avoid a NAS that is too large.
+By signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.<a href="#section-2.2.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="maximum-label-depth-per-nas-nas-mld">
@@ -1377,8 +1379,7 @@ Therefore, by signaling the maximum-supported NAS size of an MNA implementation 
 The concept of MSD is not restricted to Segment Routing (SR).
 In domains where SR is not enabled, the MSD defines the maximum label depth <span>[<a href="#rfc8491" class="cite xref">rfc8491</a>]</span>.
 For clarity, we refer to this value as Maximum Label Depth (MLD) in this document.
-The maximum number of LSEs in a specific NAS is referred to as NAS-MLD.
-MLD values may be signaled by the forwarding plane or may be provisioned by the control plane.<a href="#section-2.2.2-1" class="pilcrow">¶</a></p>
+The maximum number of LSEs in a specific NAS is referred to as NAS-MLD.<a href="#section-2.2.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.2.2-2">An LSR <span class="bcp14">SHOULD</span> signal the maximum-supported size of a NAS for each scope, i.e., the parameters NAS-MLD^Sel, NAS-MLD^HBH, and NAS-MLD^I2E.
 Those parameters include the Format A, B, C, and D LSEs from <span>[<a href="#I-D.ietf-mpls-mna-hdr" class="cite xref">I-D.ietf-mpls-mna-hdr</a>]</span> in a NAS.<a href="#section-2.2.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1742,7 +1743,7 @@ The scope of the advertisement is specific to the deployment.<a href="#section-3
 <dd class="break"></dd>
 <dt id="I-D.ietf-mpls-mna-hdr">[I-D.ietf-mpls-mna-hdr]</dt>
         <dd>
-<span class="refAuthor">Rajamanickam, J.</span>, <span class="refAuthor">Gandhi, R.</span>, <span class="refAuthor">Zigler, R.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">K. Kompella</span>, <span class="refTitle">"MPLS Network Action (MNA) Sub-Stack Solution"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-hdr-11</span>, <time datetime="2025-02-17" class="refDate">17 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-11</a>&gt;</span>. </dd>
+<span class="refAuthor">Rajamanickam, J.</span>, <span class="refAuthor">Gandhi, R.</span>, <span class="refAuthor">Zigler, R.</span>, <span class="refAuthor">Song, H.</span>, and <span class="refAuthor">K. Kompella</span>, <span class="refTitle">"MPLS Network Action (MNA) Sub-Stack Solution"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mpls-mna-hdr-12</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-12">https://datatracker.ietf.org/doc/html/draft-ietf-mpls-mna-hdr-12</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mpls-mna-usecases">[I-D.ietf-mpls-mna-usecases]</dt>
         <dd>
