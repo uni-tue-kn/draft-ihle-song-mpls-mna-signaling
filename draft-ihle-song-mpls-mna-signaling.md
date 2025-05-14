@@ -57,10 +57,10 @@ For IS-IS and OSPF signaling, sub-TLV encodings based on existing mechanisms to 
 
 # Introduction
 
-With the MPLS Network Action (MNA) framework, network actions are encoded in the MPLS stack.
+With the MPLS Network Action (MNA) framework, network actions are encoded in the MPLS stack using in-stack data (ISD).
 {{?I-D.ietf-mpls-mna-hdr}} defines the encoding of such network actions and their data in the MPLS stack.
 These network actions are processed by all nodes on a path (hop-by-hop), by only selected nodes, or on an ingress-to-egress basis.
-LSRs have different capabilites that result from the available hardware resources.
+LSRs have different capabilites that result from the available hardware resources, e.g., the number of LSEs they can parse.
 An ingress LER that pushes network actions to an MPLS stack MUST ensure that all nodes on the path can read and support the network actions.
 For that purpose, the MNA capabilities of an LSR need to be signaled to the ingress LER.
 
@@ -81,18 +81,19 @@ In this section, the parameters an LSR SHOULD signal to the ingress LER to indic
 
 The Readable Label Depth (RLD) is the number of LSEs an LSR can parse without performance impact{{?I-D.ietf-mpls-mna-fwk}}.
 An LSR is required to search the MPLS stack for Network-Action Substacks (NAS) that have to be processed by this node.
+For that purpose, the network actions must be within the RLD of a node.
 The ingress LER that pushes the network actions MUST ensure that a hop-by-hop-scoped network action is readable at each LSR on the path, i.e., that it is placed within the RLD of each node.
 For this purpose, multiple copies of the hop-by-hop-scoped NAS may be placed in the stack.
 
 ### Example
 
-An example for the RLD parameter is given in {{fig-rld_example}}. With an RLD of 5, an LSR is capable of reading labels A, B, C, D, and E but not D.
+An example for the RLD parameter is given in {{fig-rld_example}}. With an RLD of 5, an LSR is capable of reading labels A, B, C, D, and E but not F.
 An RLD of 8 is required in this example to read the entire MPLS stack.
 
 ~~~~
 {::include ./drawings/rld_example.txt}
 ~~~~
-{: #fig-rld_example title="Example MPLS stack of 8 MPLS LSE illustrating the concept of RLD."}
+{: #fig-rld_example title="Example MPLS stack of 8 MPLS LSEs illustrating the concept of RLD."}
 
 ## Maximum NAS Sizes
 This section gives a motivation for signaling maximum NAS sizes and then introduces the Maximum Label Depth (MLD).
@@ -104,7 +105,8 @@ With two maximum-sized NAS, an LSR is required to reserve 34 LSEs in hardware to
 This consumes hardware resources that may be needed to encode other LSEs, e.g., forwarding labels for SR-MPLS paths.
 
 Many use cases in the MNA framework{{?I-D.ietf-mpls-mna-usecases}} do not require a maximum-sized NAS of 17 LSEs to encode the network action and their ancillary data.
-Therefore, by signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.
+However, a node must signal the maximum NAS size it supports to the ingress LER to avoid a NAS that is too large.
+By signaling the maximum-supported NAS size of an MNA implementation from an LSR to an ingress LER, the allocated resources for NAS can be reduced and more resources are available for other purposes.
 
 ### Maximum Label Depth per NAS (NAS-MLD)
 The Maximum SID Depth (MSD) describes the number of SIDs a node is capable of imposing {{?rfc8491}}, {{?rfc8476}}.
@@ -112,7 +114,6 @@ The concept of MSD is not restricted to Segment Routing (SR).
 In domains where SR is not enabled, the MSD defines the maximum label depth {{?rfc8491}}.
 For clarity, we refer to this value as Maximum Label Depth (MLD) in this document.
 The maximum number of LSEs in a specific NAS is referred to as NAS-MLD.
-MLD values may be signaled by the forwarding plane or may be provisioned by the control plane.
 
 An LSR SHOULD signal the maximum-supported size of a NAS for each scope, i.e., the parameters NAS-MLD^Sel, NAS-MLD^HBH, and NAS-MLD^I2E.
 Those parameters include the Format A, B, C, and D LSEs from {{?I-D.ietf-mpls-mna-hdr}} in a NAS.
