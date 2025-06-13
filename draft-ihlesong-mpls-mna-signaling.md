@@ -3,7 +3,7 @@ title: "Signaling MNA Capabilities Using IGP"
 abbrev: "SIG"
 category: std
 
-docname: draft-ihle-song-mpls-mna-signaling-latest
+docname: draft-ihlesong-mpls-mna-signaling-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
@@ -20,7 +20,7 @@ venue:
   type: "Working Group"
   mail: "mpls@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/mpls/"
-  github: "uni-tue-kn/draft-ihle-song-mpls-mna-signaling"
+  github: "uni-tue-kn/draft-ihlesong-mpls-mna-signaling"
   latest: "https://uni-tue-kn.github.io/draft-ihle-song-mpls-mna-signaling/draft-ihle-song-mpls-mna-signaling.html"
 
 author:
