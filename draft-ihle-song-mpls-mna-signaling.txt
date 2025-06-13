@@ -5,10 +5,10 @@
 Multiprotocol Label Switching                                    F. Ihle
 Internet-Draft                                   University of Tuebingen
 Intended status: Standards Track                                 X. Song
-Expires: 6 December 2025                                 ZTE Corporation
+Expires: 15 December 2025                                ZTE Corporation
                                                                 M. Menth
                                                  University of Tuebingen
-                                                             4 June 2025
+                                                            13 June 2025
 
 
                   Signaling MNA Capabilities Using IGP
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 December 2025.
+   This Internet-Draft will expire on 15 December 2025.
 
 Copyright Notice
 
