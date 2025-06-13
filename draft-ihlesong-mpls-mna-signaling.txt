@@ -12,7 +12,7 @@ Expires: 15 December 2025                                ZTE Corporation
 
 
                   Signaling MNA Capabilities Using IGP
-               draft-ihle-song-mpls-mna-signaling-latest
+                draft-ihlesong-mpls-mna-signaling-latest
 
 Abstract
 
@@ -31,7 +31,7 @@ About This Document
    The latest revision of this draft can be found at https://uni-tue-
    kn.github.io/draft-ihle-song-mpls-mna-signaling/draft-ihle-song-mpls-
    mna-signaling.html.  Status information for this document may be
-   found at https://datatracker.ietf.org/doc/draft-ihle-song-mpls-mna-
+   found at https://datatracker.ietf.org/doc/draft-ihlesong-mpls-mna-
    signaling/.
 
    Discussion of this document takes place on the Multiprotocol Label
@@ -40,7 +40,7 @@ About This Document
    Subscribe at https://www.ietf.org/mailman/listinfo/mpls/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/uni-tue-kn/draft-ihle-song-mpls-mna-signaling.
+   https://github.com/uni-tue-kn/draft-ihlesong-mpls-mna-signaling.
 
 Status of This Memo
 
